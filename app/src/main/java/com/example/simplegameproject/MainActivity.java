@@ -2,6 +2,7 @@ package com.example.simplegameproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         blackPie.setX(blackX);
         blackPie.setY(blackY);
 
-        greenX = -18;
+        greenX = -16;
 
         if (greenX < 0) {
             greenX = screenWidth + 10;
@@ -186,6 +187,12 @@ public class MainActivity extends AppCompatActivity {
 
             timer.cancel();
             timer = null;
+
+            Intent intent = new Intent (getApplicationContext(), Score.class);
+            intent.putExtra("SCORE",score);
+            startActivity(intent);
+
+
         }
 
     }
