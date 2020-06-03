@@ -23,13 +23,16 @@ public class Score extends AppCompatActivity {
         int score = getIntent().getIntExtra("SCORE", 0);
         scoreLabel.setText(score + "");
 
+
+        //Gra nie zawiera implementacji własnej bazy danych
+        //Wyniki zdobywane przez gracza są jednak zapisywane na urządzeniu, zarówno wynik danej sesji jak i najlepszy wynik
         SharedPreferences settings = getSharedPreferences("GAME_DATA", Context.MODE_PRIVATE);
         int highScore = settings.getInt("HIGH_SCORE", 0);
 
         if (score > highScore) {
             highScoreLabel.setText("High Score : " + score);
 
-            // Update High Score
+            // Aktualizacja najlepszego wyniku zdobytego przez gracza
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("HIGH_SCORE", score);
             editor.commit();
@@ -42,12 +45,13 @@ public class Score extends AppCompatActivity {
     }
 
 
+    //Przeniesienie gracza do sceny z grą, umożliwiając ponowną grę
     public void tryAgain(View view) {
         startActivity(new Intent(getApplicationContext(), Start.class));
     }
 
 
-    // Disable Return Button
+    // Wyłączenie przycisku powrotu - działa, ale nie zostało jeszcze w pełni zaimplementowane w innych klasach.
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 

@@ -27,11 +27,17 @@ public class MainActivity extends AppCompatActivity {
     private ImageView cloud;
 
 
+    //Zmienne przechowywują wymiary ekranu
+
     private int frameHeight;
     private int screenWidth;
+
+
     private int faceSize;
     private int screenHeight;
 
+
+    //Zmienne przechowywujące szczegółowe dane odnośnie pozycji oraz prędkości poruszania się
     private int blackX;
     private int blackY;
 
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private int score = 0;
 
 
+    //Pozycja pojazdu gracza
     private int faceY;
 
     private Handler handler = new Handler();
@@ -58,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Przypisywanie po ustalonym id
         scoreLabel = (TextView) findViewById(R.id.scoreLabel);
         startLabel = (TextView) findViewById(R.id.startLabel);
         face = (ImageView) findViewById(R.id.face);
@@ -65,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         greenPie = (ImageView) findViewById (R.id.greenpie);
         cloud = (ImageView) findViewById(R.id.cloud);
 
+        //Pozyskuje całkowity wymiar ekranu
         WindowManager wm = getWindowManager();
         Display dis = wm.getDefaultDisplay();
         Point size = new Point();
@@ -76,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        //Początkowe ustawnie współrzędnych tak, aby obiekty pojawiały się poza ekranem.
+
         blackPie.setX(-80);
         blackPie.setY(-80);
 
@@ -86,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         cloud.setY(-80);
 
 
+        //Początkowy wynik punktowy, przypisywany na starcie
         scoreLabel.setText("Score: 0" );
 
 
@@ -100,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         hitCheck();
+
+        //Odpowiednie ustalanie pozycji obiektów, aby nie kolidowały/przenikały z górą częścią ekranu, gdzie widnieje wynik
+        //Pojazd gracza została zrobiona tak, że utrzymuje się w ekranie - nie opuszcza go ani górą, ani dołem
 
         blackX -=12;
 
@@ -135,14 +150,17 @@ public class MainActivity extends AppCompatActivity {
         cloud.setY(cloudY);
 
 
+        //True oznacza, że dotykamy ekranu - wtedy pojazd wznosi się do góry
         if (action_flag == true) {
 
             faceY -=20;
         } else {
 
+            //Nie dotykamy ekranu, więc pojazd opada
             faceY += 20;
         }
 
+        //Sprawdzanie pozycji pojazdu
         if (faceY < 0 ){
             faceY = 0;
         }
@@ -150,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         if (faceY > frameHeight - faceSize) {
             faceY = frameHeight - faceSize;
         }
+
 
         face.setY(faceY);
 
@@ -159,16 +178,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void hitCheck() {
 
+        //Kolizje zostały zrobione tak, aby zachodzić wtedy, kiedy środek danego obiektu styka się z pojazdem
+        //W innym wypadku lecą dalej
+
         int blackCenterX = blackX + blackPie.getWidth()/2;
         int blackCenterY = blackY + blackPie.getHeight()/2;
 
+        //Przykładowo
+        //0 <= blackCenterX <= faceWidth
+        //faceY <= blackCenterY <= faceY + faceHeight
+
         if (0 <= blackCenterX && blackCenterX <= faceSize && faceY <= blackCenterY && blackCenterY <= faceY + faceSize) {
 
+
+            //Przyznawane punkty
             score += 10;
             blackX =-10;
 
         }
 
+
+        //Podobne zasady w przypadku pozostałych obiektów
 
         int greenCenterX = greenX + greenPie.getWidth()/2;
         int greenCenterY = greenX + greenPie.getHeight()/2;
@@ -185,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (0 <= cloudCenterX && cloudCenterX <= faceSize && faceY <= cloudCenterY && cloudCenterY <= faceY + faceSize) {
 
+
+            //W przypadku kolizji z chmurką, zatrzymywana jest gra i gracz jest przenoszony na ekran wyników.
             timer.cancel();
             timer = null;
 
@@ -204,11 +236,14 @@ public class MainActivity extends AppCompatActivity {
 
             start_flag = true;
 
+            //Pozyskiwanie wymiarów
+            //Dane są pozyskiwane w tej metodzie, ponieważ UI nie było ustawiane na scene w OnCreate()
             FrameLayout frame = (FrameLayout) findViewById(R.id. frame);
             frameHeight = frame.getHeight();
 
             faceY = (int) face.getY();
 
+            //Pozyskiwanie wymiarów pojazdu (obrazek ma wymiary 300 na 300, więc jest kwadratem - wystarczy tylko wysokość)
             faceSize = face.getHeight();
 
 
@@ -218,6 +253,8 @@ public class MainActivity extends AppCompatActivity {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+
+             //Określa, jak często wywoływany jest changepos ( w tym przypadku - co 20 milisekund)
 
                     handler.post(new Runnable() {
                         @Override
@@ -235,6 +272,8 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
+
+            //
             if(mEvent.getAction() == MotionEvent.ACTION_DOWN){
                 action_flag = true;
             } else if (mEvent.getAction() == MotionEvent.ACTION_UP) {

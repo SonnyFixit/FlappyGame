@@ -7,6 +7,9 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+//Proste menu startowe, dzięki któremu gracz może poznać zasady punktacji oraz końca gry
+//Odpowiednia kolejność ekranów gry została ustawiona w AndroidManifest.xml
 public class Start extends AppCompatActivity {
 
     @Override
